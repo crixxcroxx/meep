@@ -15,7 +15,11 @@
         <div class="col-md-8">
             <div class="card-body">
                 <h5 class="card-title">{{ profile.user.username }}</h5>
-                <p class="card-text">@{{ profile.user.username|lower }}</p>
+                <p class="card-text">
+                    <a href="{% url 'profile' profile.user.id %}" rel="noopener noreferrer">
+                        {{ profile.user.username|lower }}
+                    </a>
+                </p>
                 <p class="card-text"><small class="text-muted">Last updated: {{ profile.date_modified }}</small></p>
             </div>
         </div>
