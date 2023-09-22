@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Profile, Meep
-from .forms import MeepForm
+from .forms import MeepForm, SignUpForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from django import forms
 
 
 # Create your views here.
@@ -14,7 +16,7 @@ def home(request):
                 meep = form.save(commit=False)
                 meep.user = request.user
                 meep.save()
-                messages.success(request, ("You must be logged in to view this page"))
+                messages.success(request, ("Meep posted"))
 
                 return redirect("home")
 
@@ -80,3 +82,25 @@ def logout_user(request):
     logout(request)
     messages.success(request, ("You have been logged out"))
     return redirect("home")
+
+
+def register_user(request):
+    form = SignUpForm()
+
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password1"]
+            # first_name = form.cleaned_data["first_name"]
+            # last_name = form.cleaned_data["last_name"]
+            # email = form.cleaned_data["email"]
+
+            # Login user
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, ("You have successfully registered. Welcome"))
+            return redirect("home")
+
+    return render(request, "register.html", {"form": form})
